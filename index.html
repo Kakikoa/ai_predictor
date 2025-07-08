@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Prediction Frontend</title>
+</head>
+<body>
+  <h1>Crypto + Stock Prediction</h1>
+
+  <label for="crypto">Crypto (comma-separated):</label><br>
+  <input type="text" id="crypto" placeholder="e.g. BTC,ETH"><br><br>
+
+  <label for="stocks">Stocks (comma-separated):</label><br>
+  <input type="text" id="stocks" placeholder="e.g. AAPL,MSFT"><br><br>
+
+  <button onclick="getPrediction()">Get Prediction</button>
+
+  <h2>Result:</h2>
+  <pre id="result"></pre>
+
+  <script>
+    async function getPrediction() {
+      const crypto = document.getElementById("crypto").value.split(",");
+      const stocks = document.getElementById("stocks").value.split(",");
+
+      const body = {
+        crypto: crypto.map(c => c.trim().toUpperCase()),
+        stocks: stocks.map(s => s.trim().toUpperCase())
+      };
+
+      const res = await fetch("http://127.0.0.1:8000/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+
+      const data = await res.json();
+      document.getElementById("result").textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>
